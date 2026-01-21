@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Jesse's Plumbing — Your One Stop Plumbing & Gas Services. Free estimates. Work guaranteed." />
+  <title>Jesse's Plumbing | Plumbing & Gas Services</title>
+
+  <style>
+    :root{
+      --bg:#0b1220;
+      --panel:#0f1a33;
+      --text:#eaf0ff;
+      --muted:#b9c6ea;
+      --brand:#4f7cff;
+      --brand2:#7aa6ff;
+      --border:rgba(255,255,255,.12);
+      --shadow:0 12px 30px rgba(0,0,0,.35);
+      --radius:18px;
+      --max:1100px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  background:
+    linear-gradient(rgba(11,18,32,.75), rgba(11,18,32,.75)),
+    url("bg.jpg") center / cover no-repeat fixed;
+  color:var(--text);
+  line-height:1.5;
+    }
+    a{color:inherit}
+    .wrap{max-width:var(--max); margin:0 auto; padding:24px}
+
+    header{
+      position:sticky; top:0; z-index:5;
+      backdrop-filter: blur(10px);
+      background: rgba(11,18,32,.65);
+      border-bottom:1px solid var(--border);
+    }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between; gap:18px;
+      max-width:var(--max); margin:0 auto; padding:14px 24px;
+    }
+
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      text-decoration:none;
+      min-width: 280px;
+    }
+    .logo-img{
+      height:52px;
+      width:auto;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.04);
+      padding:6px;
+      box-shadow: var(--shadow);
+      object-fit: contain;
+    }
+    .brand h1{font-size:16px; margin:0; letter-spacing:.2px}
+    .brand p{margin:0; font-size:12px; color:var(--muted)}
+
+    nav ul{list-style:none; display:flex; gap:14px; padding:0; margin:0; flex-wrap:wrap}
+    nav a{
+      text-decoration:none; color:var(--muted);
+      padding:8px 10px; border-radius:12px;
+    }
+    nav a:hover{background:rgba(255,255,255,.06); color:var(--text)}
+
+    .cta{
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end;
+    }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.06);
+      text-decoration:none;
+      color:var(--text);
+      font-weight:600;
+      white-space:nowrap;
+      cursor:pointer;
+    }
+    .btn.primary{
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      border-color: rgba(255,255,255,.18);
+      color:#071022;
+    }
+    .btn:hover{transform: translateY(-1px)}
+
+    .hero{padding:44px 0 22px}
+    .grid{
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap:22px;
+      align-items:stretch;
+    }
+    .panel{
+      background: rgba(15,26,51,.65);
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:22px;
+    }
+    .kicker{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.05);
+      color: var(--muted);
+      font-size:13px;
+      margin-bottom:14px;
+    }
+    .hero h2{
+      font-size:42px;
+      line-height:1.1;
+      margin:0 0 10px 0;
+      letter-spacing:-.5px;
+    }
+    .hero .tag{
+      margin:0 0 16px 0;
+      color:var(--muted);
+      font-size:16px;
+      max-width:60ch;
+    }
+
+    .card-title{
+      font-size:14px;
+      color:var(--muted);
+      margin:0 0 10px;
+      letter-spacing:.25px;
+      text-transform:uppercase;
+    }
+    .contact-list{margin:0; padding:0; list-style:none; display:grid; gap:10px}
+    .contact-item{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      border-radius: 14px;
+      padding:12px;
+    }
+    .contact-item small{display:block; color:var(--muted); margin-bottom:4px}
+    .contact-item a{font-weight:700; text-decoration:none}
+
+    section{padding:18px 0}
+    .services{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:14px;
+    }
+    .service{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      border-radius: var(--radius);
+      padding:16px;
+      min-height:110px;
+    }
+    .service h3{margin:0 0 6px; font-size:16px}
+    .service p{margin:0; color:var(--muted); font-size:14px}
+
+    .split{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+      align-items:start;
+    }
+    form{display:grid; gap:10px}
+    input, textarea{
+      width:100%;
+      padding:12px 12px;
+      border-radius: 14px;
+      border:1px solid var(--border);
+      background: rgba(7,16,34,.6);
+      color: var(--text);
+      outline:none;
+    }
+    textarea{min-height:120px; resize:vertical}
+    .fineprint{color:var(--muted); font-size:13px; margin:8px 0 0}
+    footer{
+      border-top:1px solid var(--border);
+      margin-top:26px;
+      padding:22px 0 34px;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .rumor{
+      font-style:italic;
+      color: #d8e3ff;
+      opacity:.95;
+      margin-top:10px;
+    }
+
+    @media (max-width: 920px){
+      .grid{grid-template-columns:1fr}
+      .hero h2{font-size:34px}
+      .services{grid-template-columns:1fr}
+      .split{grid-template-columns:1fr}
+      .brand{min-width:auto}
+      .logo-img{height:46px}
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Put logo.png in the same folder as index.html -->
+  <header>
+    <div class="nav">
+      <a class="brand" href="#top" aria-label="Jesse's Plumbing home">
+        <img src="logo.png" alt="Jesse's Plumbing logo" class="logo-img" />
+        <div>
+          <h1>Jesse's Plumbing</h1>
+          <p>Your One Stop Plumbing &amp; Gas Services</p>
+        </div>
+      </a>
+
+      <nav aria-label="Primary">
+        <ul>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#estimates">Estimates</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="cta">
+        <a class="btn" href="tel:+19514037164">Call (951) 403-7164</a>
+        <a class="btn primary" href="#contact">Get a Free Estimate</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top" class="wrap">
+    <section class="hero">
+      <div class="grid">
+        <div class="panel">
+          <div class="kicker">Reliable service • Clean work • Straight answers</div>
+          <h2>Plumbing &amp; Gas Services you can count on.</h2>
+          <p class="tag">
+            Jesse's Plumbing provides dependable service for homes and properties—repairs, upgrades, and troubleshooting.
+          </p>
+
+          <div style="height:14px"></div>
+
+          <div class="cta" style="justify-content:flex-start">
+            <span class="btn" style="cursor:default">HABLAMOS ESPAÑOL</span>
+            <a class="btn" href="mailto:zacatecas69.jjm@gmail.com?subject=Free%20Estimate%20Request%20-%20Jesse%27s%20Plumbing">
+              Email for an Estimate
+            </a>
+          </div>
+
+          <p class="fineprint">
+            For the quickest response, text or email your name, city, and a brief description of the issue.
+          </p>
+        </div>
+
+        <aside class="panel" aria-label="Quick contact">
+          <p class="card-title">Contact</p>
+          <ul class="contact-list">
+            <li class="contact-item">
+              <small>Facebook</small>
+              <!-- Replace the # with your Facebook page link -->
+              <a href="#" target="_blank" rel="noopener">Add your Facebook link</a>
+            </li>
+
+            <li class="contact-item">
+              <small>Email</small>
+              <a href="mailto:zacatecas69.jjm@gmail.com">zacatecas69.jjm@gmail.com</a>
+            </li>
+          </ul>
+
+          <p class="rumor">“That’s The Rumor.”</p>
+
+          <div style="height:10px"></div>
+
+          <div class="service" style="min-height:auto">
+            <img src="logo.png" alt="Jesse's Plumbing logo preview"
+                 style="width:100%; height:auto; border-radius:16px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.03); padding:10px;">
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="services">
+      <div class="panel">
+        <p class="card-title">Services</p>
+        <div class="services">
+          <div class="service"><h3>Remodels</h3><p>Kitchen/bath updates, fixture moves, and rough-in support.</p></div>
+          <div class="service"><h3>Re-Pipe</h3><p>Partial or full re-pipes to improve flow and reliability.</p></div>
+          <div class="service"><h3>Septic Tanks</h3><p>Service coordination and plumbing-side troubleshooting.</p></div>
+          <div class="service"><h3>Drain Cleaning</h3><p>Clears clogs and restores proper drainage.</p></div>
+          <div class="service"><h3>Jet Line</h3><p>High-pressure line cleaning for stubborn buildup.</p></div>
+          <div class="service"><h3>Plumbing Consultant</h3><p>Second opinions, planning, and guidance for repairs/upgrades.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="estimates">
+      <div class="panel split">
+        <div>
+          <p class="card-title">Free Estimates</p>
+          <h3 style="margin:0 0 8px">Tell us what’s going on.</h3>
+          <p style="margin:0; color:var(--muted)">
+            For the fastest quote, include your city, the issue, and any photos/videos you have.
+          </p>
+
+          <div style="height:14px"></div>
+
+          <div class="cta" style="justify-content:flex-start">
+            <a class="btn primary" href="tel:+19514037164">Call (951) 403-7164</a>
+          </div>
+
+          <p class="fineprint">
+            Estimates are confirmed after details are reviewed. Emergency service availability varies.
+          </p>
+        </div>
+
+        <div id="contact">
+          <p class="card-title">Request an Estimate</p>
+          <form onsubmit="return handleSubmit(event)">
+            <input name="name" placeholder="Your name" required />
+            <input name="phone" placeholder="Best phone number" />
+            <input name="email" type="email" placeholder="Email (optional)" />
+            <textarea name="message" placeholder="What do you need help with? Include city + brief details." required></textarea>
+            <button class="btn primary" type="submit">Prepare Email Request</button>
+            <p class="fineprint" id="formNote" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="wrap" style="padding:0">
+        <div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap">
+          <div>
+            <strong>Jesse's Plumbing</strong><br/>
+            Your One Stop Plumbing &amp; Gas Services
+          </div>
+          <div style="text-align:right">
+            <a href="tel:+19514037164">(951) 403-7164</a> •
+            <a href="mailto:zacatecas69.jjm@gmail.com">zacatecas69.jjm@gmail.com</a>
+          </div>
+        </div>
+        <p class="fineprint" style="margin-top:10px">
+          © <span id="year"></span> Jesse's Plumbing. Free Estimates. Work Guaranteed. “That’s The Rumor.”
+        </p>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    function handleSubmit(e){
+      e.preventDefault();
+      const form = e.target;
+      const name = form.name.value.trim();
+      const phone = form.phone.value.trim();
+      const email = form.email.value.trim();
+      const msg = form.message.value.trim();
+
+      const subject = encodeURIComponent("Free Estimate Request - Jesse's Plumbing");
+      const body = encodeURIComponent(
+        `Name: ${name}\n` +
+        `Phone: ${phone}\n` +
+        `Email: ${email}\n\n` +
+        `Details:\n${msg}\n\n` +
+        `Sent from the website.`
+      );
+
+      window.location.href = `mailto:zacatecas69.jjm@gmail.com?subject=${subject}&body=${body}`;
+      document.getElementById("formNote").textContent =
+        "Opening your email app with a prepared estimate request…";
+      return false;
+    }
+  </script>
+</body>
+</html>
