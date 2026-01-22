@@ -1,7 +1,7 @@
 backend:
   name: github
   branch: main
-  repo: jessemedina72/jesses-plumbing-website
+  repo: jessemedina72/jessesplumbing
   client_id: Ov23libsVDpAcIRTppjZ
   client_secret: 1afd0caa1c49f9840b974f27dc8a3acc6fc4f591
 
