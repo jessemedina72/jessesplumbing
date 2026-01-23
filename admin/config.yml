@@ -1,9 +1,6 @@
 backend:
-  name: github
+  name: git-gateway
   branch: main
-  repo: jessemedina72/jessesplumbing
-  client_id: Ov23libsVDpAcIRTppjZ
-  client_secret: 1afd0caa1c49f9840b974f27dc8a3acc6fc4f591
 
 media_folder: "uploads"
 public_folder: "/uploads"
