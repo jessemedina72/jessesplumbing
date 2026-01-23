@@ -377,5 +377,14 @@
       return false;
     }
   </script>
+  <script>
+  // If an Identity invite/recovery token lands on the homepage, send it to /admin/ so the modal works there.
+  (function () {
+    const h = window.location.hash || "";
+    if (h.includes("invite_token=") || h.includes("recovery_token=") || h.includes("confirmation_token=")) {
+      window.location.replace("/admin/" + h);
+    }
+  })();
+</script>
 </body>
 </html>
