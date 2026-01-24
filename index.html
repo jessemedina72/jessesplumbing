@@ -203,6 +203,112 @@
       .brand{min-width:auto}
       .logo-img{height:46px}
     }
+    /* ===== Job Photos Slideshow ===== */
+.gallery-shell{
+  margin-top:14px;
+  border:1px solid var(--border);
+  background: rgba(255,255,255,.04);
+  border-radius: var(--radius);
+  padding:14px;
+}
+
+.gallery-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:10px;
+}
+
+.gallery-title{
+  font-weight:700;
+  color:var(--text);
+  font-size:14px;
+  letter-spacing:.2px;
+}
+
+.gallery-dots{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+
+.gallery-dots span{
+  width:7px; height:7px;
+  border-radius:999px;
+  background: rgba(255,255,255,.25);
+}
+
+.gallery-dots span.active{
+  background: rgba(255,255,255,.85);
+}
+
+.carousel{
+  position:relative;
+  border-radius: 16px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(7,16,34,.55);
+}
+
+.car-viewport{
+  width:100%;
+  aspect-ratio: 16 / 9; /* looks good on mobile */
+  overflow:hidden;
+}
+
+.car-track{
+  display:flex;
+  height:100%;
+  transition: transform 420ms ease;
+}
+
+.car-slide{
+  min-width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.car-slide img{
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  display:block;
+}
+
+.car-btn{
+  position:absolute;
+  top:50%;
+  transform: translateY(-50%);
+  z-index:2;
+  border:1px solid rgba(255,255,255,.18);
+  background: rgba(11,18,32,.55);
+  color: var(--text);
+  width:40px;
+  height:40px;
+  border-radius: 999px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  line-height:1;
+  backdrop-filter: blur(8px);
+}
+
+.car-btn.prev{ left:10px; }
+.car-btn.next{ right:10px; }
+
+.gallery-caption{
+  margin:10px 2px 0;
+  color: var(--muted);
+  font-size:13px;
+  min-height: 1.2em;
+}
+
   </style>
 </head>
 
@@ -254,7 +360,24 @@
 
           <p class="fineprint">
             For the quickest response, text or email your name, city, and a brief description of the issue.
-          </p>
+            <!-- Job Photos Slideshow (shows images from /content/gallery.json) -->
+<div class="gallery-shell" aria-label="Recent job photos">
+  <div class="gallery-head">
+    <span class="gallery-title">Recent Job Photos</span>
+    <div class="gallery-dots" id="galleryDots" aria-hidden="true"></div>
+  </div>
+
+  <div class="carousel" id="galleryCarousel" role="region" aria-label="Job photos carousel">
+    <button class="car-btn prev" type="button" aria-label="Previous photo" onclick="galleryPrev()">‹</button>
+    <div class="car-viewport">
+      <div class="car-track" id="galleryTrack"></div>
+    </div>
+    <button class="car-btn next" type="button" aria-label="Next photo" onclick="galleryNext()">›</button>
+  </div>
+
+  <p class="gallery-caption" id="galleryCaption"></p>
+</div>
+
         </div>
 
         <aside class="panel" aria-label="Quick contact">
@@ -352,31 +475,114 @@
   </main>
 
   <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
+  document.getElementById("year").textContent = new Date().getFullYear();
 
-    function handleSubmit(e){
-      e.preventDefault();
-      const form = e.target;
-      const name = form.name.value.trim();
-      const phone = form.phone.value.trim();
-      const email = form.email.value.trim();
-      const msg = form.message.value.trim();
+  function handleSubmit(e){
+    e.preventDefault();
+    const form = e.target;
+    const name = form.name.value.trim();
+    const phone = form.phone.value.trim();
+    const email = form.email.value.trim();
+    const msg = form.message.value.trim();
 
-      const subject = encodeURIComponent("Free Estimate Request - Jesse's Plumbing");
-      const body = encodeURIComponent(
-        `Name: ${name}\n` +
-        `Phone: ${phone}\n` +
-        `Email: ${email}\n\n` +
-        `Details:\n${msg}\n\n` +
-        `Sent from the website.`
-      );
+    const subject = encodeURIComponent("Free Estimate Request - Jesse's Plumbing");
+    const body = encodeURIComponent(
+      `Name: ${name}\n` +
+      `Phone: ${phone}\n` +
+      `Email: ${email}\n\n` +
+      `Details:\n${msg}\n\n` +
+      `Sent from the website.`
+    );
 
-      window.location.href = `mailto:zacatecas69.jjm@gmail.com?subject=${subject}&body=${body}`;
-      document.getElementById("formNote").textContent =
-        "Opening your email app with a prepared estimate request…";
-      return false;
+    window.location.href = `mailto:zacatecas69.jjm@gmail.com?subject=${subject}&body=${body}`;
+    document.getElementById("formNote").textContent =
+      "Opening your email app with a prepared estimate request…";
+    return false;
+  }
+
+  /* ===== Gallery Slideshow (reads /content/gallery.json) ===== */
+  let galleryIndex = 0;
+  let galleryItems = [];
+  let galleryTimer = null;
+
+  function setGalleryIndex(i){
+    if (!galleryItems.length) return;
+    galleryIndex = (i + galleryItems.length) % galleryItems.length;
+
+    const track = document.getElementById("galleryTrack");
+    track.style.transform = `translateX(-${galleryIndex * 100}%)`;
+
+    const caption = document.getElementById("galleryCaption");
+    const item = galleryItems[galleryIndex];
+    caption.textContent = item.title ? item.title : "";
+
+    // dots
+    const dotsWrap = document.getElementById("galleryDots");
+    [...dotsWrap.children].forEach((dot, idx) => {
+      dot.classList.toggle("active", idx === galleryIndex);
+    });
+  }
+
+  function galleryPrev(){ setGalleryIndex(galleryIndex - 1); restartGalleryTimer(); }
+  function galleryNext(){ setGalleryIndex(galleryIndex + 1); restartGalleryTimer(); }
+
+  function restartGalleryTimer(){
+    if (galleryTimer) clearInterval(galleryTimer);
+    galleryTimer = setInterval(() => setGalleryIndex(galleryIndex + 1), 4500);
+  }
+
+  async function loadGallery(){
+    const track = document.getElementById("galleryTrack");
+    const dotsWrap = document.getElementById("galleryDots");
+    const caption = document.getElementById("galleryCaption");
+
+    try{
+      const res = await fetch("/content/gallery.json", { cache: "no-store" });
+      if(!res.ok) throw new Error("Gallery JSON not found");
+      const data = await res.json();
+
+      galleryItems = Array.isArray(data.items) ? data.items : [];
+      if(!galleryItems.length){
+        caption.textContent = "No photos yet — add some in the admin panel.";
+        return;
+      }
+
+      // Build slides
+      track.innerHTML = "";
+      dotsWrap.innerHTML = "";
+
+      galleryItems.forEach((item, idx) => {
+        const slide = document.createElement("div");
+        slide.className = "car-slide";
+
+        const img = document.createElement("img");
+
+        // item.image should already be like "/uploads/xxx.jpg"
+        // encodeURI helps if filenames have spaces
+        img.src = encodeURI(item.image || "");
+        img.alt = item.title ? item.title : `Job photo ${idx + 1}`;
+        img.loading = "lazy";
+
+        slide.appendChild(img);
+        track.appendChild(slide);
+
+        const dot = document.createElement("span");
+        dot.addEventListener("click", () => { setGalleryIndex(idx); restartGalleryTimer(); });
+        dotsWrap.appendChild(dot);
+      });
+
+      setGalleryIndex(0);
+      restartGalleryTimer();
+    }catch(err){
+      caption.textContent = "Gallery couldn’t load yet. Publish photos in admin, then redeploy.";
+      console.warn("Gallery load error:", err);
     }
-  </script>
+  }
+
+  // Load once page is ready
+  window.addEventListener("DOMContentLoaded", loadGallery);
+</script>
+
   <script>
   // If an Identity invite/recovery token lands on the homepage, send it to /admin/ so the modal works there.
   (function () {
