@@ -629,7 +629,7 @@ img.style.cursor = "zoom-in";
 img.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-  window.openLightbox(img.src, item.title || img.alt || "");
+  openLightboxByIndex(idx);
 });
 
 slide.appendChild(img);
@@ -650,41 +650,52 @@ slide.appendChild(img);
   }
 
   // Load once page is ready
-    // ===== Lightbox logic (safe + global) =====
-window.openLightbox = function (src, caption) {
-  const lightbox = document.getElementById("lightbox");
-  const lightboxImg = document.getElementById("lightboxImg");
-  const lightboxCaption = document.getElementById("lightboxCaption");
+// ===== Lightbox logic (with next/prev) =====
+let lightboxIndex = 0;
 
-  if (!lightbox || !lightboxImg) {
-    console.error("Lightbox HTML not found (check ids: lightbox, lightboxImg).");
-    return;
-  }
+const lightbox = document.getElementById("lightbox");
+const lightboxImg = document.getElementById("lightboxImg");
+const lightboxCaption = document.getElementById("lightboxCaption");
+
+function openLightboxByIndex(i){
+  if (!galleryItems || !galleryItems.length) return;
+
+  lightboxIndex = (i + galleryItems.length) % galleryItems.length;
+  const item = galleryItems[lightboxIndex];
+
+  const src = encodeURI(item.image || "");
+  const caption = item.title || `Job photo ${lightboxIndex + 1}`;
 
   lightboxImg.src = src;
-  lightboxImg.alt = caption || "Job photo";
-  if (lightboxCaption) lightboxCaption.textContent = caption || "";
+  lightboxImg.alt = caption;
+  lightboxCaption.textContent = caption;
+
   lightbox.classList.add("open");
   lightbox.setAttribute("aria-hidden", "false");
-};
+}
 
-window.closeLightbox = function () {
-  const lightbox = document.getElementById("lightbox");
-  const lightboxImg = document.getElementById("lightboxImg");
-  const lightboxCaption = document.getElementById("lightboxCaption");
+function closeLightbox(){
+  lightbox.classList.remove("open");
+  lightbox.setAttribute("aria-hidden", "true");
+  lightboxImg.src = "";
+  lightboxCaption.textContent = "";
+}
 
-  if (lightbox) {
-    lightbox.classList.remove("open");
-    lightbox.setAttribute("aria-hidden", "true");
-  }
-  if (lightboxImg) lightboxImg.src = "";
-  if (lightboxCaption) lightboxCaption.textContent = "";
-};
+function lightboxPrev(){ openLightboxByIndex(lightboxIndex - 1); }
+function lightboxNext(){ openLightboxByIndex(lightboxIndex + 1); }
 
-// close on ESC
+// Expose for HTML buttons
+window.closeLightbox = closeLightbox;
+window.lightboxPrev = lightboxPrev;
+window.lightboxNext = lightboxNext;
+
+// Keyboard controls
 document.addEventListener("keydown", (e) => {
-  const lightbox = document.getElementById("lightbox");
-  if (e.key === "Escape" && lightbox && lightbox.classList.contains("open")) window.closeLightbox();
+  if (!lightbox.classList.contains("open")) return;
+
+  if (e.key === "Escape") closeLightbox();
+  if (e.key === "ArrowLeft") lightboxPrev();
+  if (e.key === "ArrowRight") lightboxNext();
 });
 window.addEventListener("DOMContentLoaded", loadGallery);
 
@@ -705,6 +716,8 @@ window.addEventListener("DOMContentLoaded", loadGallery);
 
   <div class="lb-dialog" role="dialog" aria-modal="true" aria-label="Expanded photo">
     <button class="lb-close" type="button" onclick="closeLightbox()" aria-label="Close">×</button>
+    <button class="lb-nav lb-prev" type="button" onclick="lightboxPrev()" aria-label="Previous">‹</button>
+    <button class="lb-nav lb-next" type="button" onclick="lightboxNext()" aria-label="Next">›</button>
     <img id="lightboxImg" alt="" />
     <div class="lb-caption" id="lightboxCaption"></div>
   </div>
