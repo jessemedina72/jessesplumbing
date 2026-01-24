@@ -308,6 +308,67 @@
   font-size:13px;
   min-height: 1.2em;
 }
+    /* ===== Lightbox (click to enlarge) ===== */
+.lightbox{
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+}
+
+.lightbox.open{ display: block; }
+
+.lb-backdrop{
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.72);
+}
+
+.lb-dialog{
+  position: relative;
+  max-width: min(960px, 92vw);
+  max-height: 86vh;
+  margin: 6vh auto 0;
+  padding: 12px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(15,26,51,.92);
+  box-shadow: 0 20px 60px rgba(0,0,0,.55);
+  backdrop-filter: blur(10px);
+}
+
+#lightboxImg{
+  width: 100%;
+  height: auto;
+  max-height: 72vh;
+  object-fit: contain;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.03);
+}
+
+.lb-caption{
+  margin-top: 10px;
+  color: rgba(234,240,255,.9);
+  font-size: 14px;
+}
+
+.lb-close{
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+}
+.lb-close:hover{ transform: translateY(-1px); }
+
 
   </style>
 </head>
@@ -560,10 +621,17 @@
         // item.image should already be like "/uploads/xxx.jpg"
         // encodeURI helps if filenames have spaces
         img.src = encodeURI(item.image || "");
-        img.alt = item.title ? item.title : `Job photo ${idx + 1}`;
-        img.loading = "lazy";
+img.alt = item.title ? item.title : `Job photo ${idx + 1}`;
+img.loading = "lazy";
 
-        slide.appendChild(img);
+// Click-to-enlarge
+img.style.cursor = "zoom-in";
+img.addEventListener("click", () => {
+  openLightbox(item.image, item.title || "");
+});
+
+slide.appendChild(img);
+
         track.appendChild(slide);
 
         const dot = document.createElement("span");
@@ -581,6 +649,29 @@
 
   // Load once page is ready
   window.addEventListener("DOMContentLoaded", loadGallery);
+    // ===== Lightbox logic =====
+const lightbox = document.getElementById("lightbox");
+const lightboxImg = document.getElementById("lightboxImg");
+const lightboxCaption = document.getElementById("lightboxCaption");
+
+function openLightbox(src, caption){
+  lightboxImg.src = src;
+  lightboxImg.alt = caption || "Job photo";
+  lightboxCaption.textContent = caption || "";
+  lightbox.classList.add("open");
+  lightbox.setAttribute("aria-hidden", "false");
+}
+
+function closeLightbox(){
+  lightbox.classList.remove("open");
+  lightbox.setAttribute("aria-hidden", "true");
+  lightboxImg.src = "";
+}
+
+// close on ESC
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && lightbox.classList.contains("open")) closeLightbox();
+});
 </script>
 
   <script>
@@ -592,5 +683,16 @@
     }
   })();
 </script>
+ <!-- Lightbox -->
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <div class="lb-backdrop" onclick="closeLightbox()"></div>
+
+  <div class="lb-dialog" role="dialog" aria-modal="true" aria-label="Expanded photo">
+    <button class="lb-close" type="button" onclick="closeLightbox()" aria-label="Close">×</button>
+    <img id="lightboxImg" alt="" />
+    <div class="lb-caption" id="lightboxCaption"></div>
+  </div>
+</div>
+ 
 </body>
 </html>
