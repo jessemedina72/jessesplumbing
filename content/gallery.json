@@ -1,19 +1,43 @@
 {
   "items": [
     {
+      "image": "/uploads/20230814_105439.jpg",
+      "title": "Plans review before concrete demo"
+    },
+    {
       "image": "/uploads/258940581-2-.jpg",
-      "title": "Underground Plumbing",
-      "description": "Underground plumbing for a local business"
+      "title": "Underground plubing for commercial business",
+      "description": ""
     },
     {
       "image": "/uploads/20230810_130433.jpg",
-      "title": "Electric Water Heater Installation",
-      "description": "The customer wanted to replace the old 50-gallon water heater"
+      "title": "Rheem electric tank heater",
+      "description": ""
     },
     {
       "image": "/uploads/20240812_114711.jpg",
-      "title": "Residental Shower Valve",
-      "description": "Large room addition with a shower valve installation"
+      "title": "SHower Valve Install ",
+      "description": ""
+    },
+    {
+      "image": "/uploads/20220224_111810.jpg",
+      "title": "Bathroom addition repipe "
+    },
+    {
+      "image": "/uploads/20230722_111805.jpg",
+      "title": "Bathroom demo of old tub"
+    },
+    {
+      "image": "/uploads/20230724_143002.jpg",
+      "title": "A repipe of old water and sewer lines "
+    },
+    {
+      "image": "/uploads/20230726_123858.jpg",
+      "title": "New tub install"
+    },
+    {
+      "image": "/uploads/20230726_142757-2-.jpg",
+      "title": "Shower panels to complete the shower"
     }
   ]
 }
