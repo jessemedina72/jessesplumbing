@@ -2,7 +2,18 @@
   "items": [
     {
       "image": "/uploads/258940581-2-.jpg",
-      "title": "test"
+      "title": "Underground Plumbing",
+      "description": "Underground plumbing for a local business"
+    },
+    {
+      "image": "/uploads/20230810_130433.jpg",
+      "title": "Electric Water Heater Installation",
+      "description": "The customer wanted to replace the old 50-gallon water heater"
+    },
+    {
+      "image": "/uploads/20240812_114711.jpg",
+      "title": "Residental Shower Valve",
+      "description": "Large room addition with a shower valve installation"
     }
   ]
 }
