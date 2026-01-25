@@ -561,105 +561,46 @@
     return false;
   }
 
-  /* ===== Gallery Slideshow (reads /content/gallery.json) ===== */
-  let galleryIndex = 0;
-  let galleryItems = [];
-  let galleryTimer = null;
+/* ===== Gallery Slideshow (reads /content/gallery.json) ===== */
+let galleryIndex = 0;
+let galleryItems = [];
+let galleryTimer = null;
 
-  function setGalleryIndex(i){
-    if (!galleryItems.length) return;
-    galleryIndex = (i + galleryItems.length) % galleryItems.length;
+function setGalleryIndex(i){
+  if (!galleryItems.length) return;
+  galleryIndex = (i + galleryItems.length) % galleryItems.length;
 
-    const track = document.getElementById("galleryTrack");
-    track.style.transform = `translateX(-${galleryIndex * 100}%)`;
+  const track = document.getElementById("galleryTrack");
+  track.style.transform = `translateX(-${galleryIndex * 100}%)`;
 
-    const caption = document.getElementById("galleryCaption");
-    const item = galleryItems[galleryIndex];
-    caption.textContent = item.title ? item.title : "";
+  const caption = document.getElementById("galleryCaption");
+  const item = galleryItems[galleryIndex];
+  caption.textContent = item.title ? item.title : "";
 
-    // dots
-    const dotsWrap = document.getElementById("galleryDots");
-    [...dotsWrap.children].forEach((dot, idx) => {
-      dot.classList.toggle("active", idx === galleryIndex);
-    });
-  }
+  const dotsWrap = document.getElementById("galleryDots");
+  [...dotsWrap.children].forEach((dot, idx) => {
+    dot.classList.toggle("active", idx === galleryIndex);
+  });
+}
 
-  function galleryPrev(){ setGalleryIndex(galleryIndex - 1); restartGalleryTimer(); }
-  function galleryNext(){ setGalleryIndex(galleryIndex + 1); restartGalleryTimer(); }
+function galleryPrev(){ setGalleryIndex(galleryIndex - 1); restartGalleryTimer(); }
+function galleryNext(){ setGalleryIndex(galleryIndex + 1); restartGalleryTimer(); }
 
-  function restartGalleryTimer(){
-    if (galleryTimer) clearInterval(galleryTimer);
-    galleryTimer = setInterval(() => setGalleryIndex(galleryIndex + 1), 4500);
-  }
+// make onclick="" work
+window.galleryPrev = galleryPrev;
+window.galleryNext = galleryNext;
 
-  async function loadGallery(){
-    const track = document.getElementById("galleryTrack");
-    const dotsWrap = document.getElementById("galleryDots");
-    const caption = document.getElementById("galleryCaption");
+function restartGalleryTimer(){
+  if (galleryTimer) clearInterval(galleryTimer);
+  galleryTimer = setInterval(() => setGalleryIndex(galleryIndex + 1), 4500);
+}
 
-    try{
-      const res = await fetch("/content/gallery.json", { cache: "no-store" });
-      if(!res.ok) throw new Error("Gallery JSON not found");
-      const data = await res.json();
-
-      galleryItems = Array.isArray(data.items) ? data.items : [];
-      if(!galleryItems.length){
-        caption.textContent = "No photos yet — add some in the admin panel.";
-        return;
-      }
-
-      // Build slides
-      track.innerHTML = "";
-      dotsWrap.innerHTML = "";
-
-      galleryItems.forEach((item, idx) => {
-        const slide = document.createElement("div");
-        slide.className = "car-slide";
-
-        const img = document.createElement("img");
-
-        // item.image should already be like "/uploads/xxx.jpg"
-        // encodeURI helps if filenames have spaces
-        img.src = encodeURI(item.image || "");
-img.alt = item.title ? item.title : `Job photo ${idx + 1}`;
-img.loading = "lazy";
-
-// Click-to-enlarge
-img.style.cursor = "zoom-in";
-img.addEventListener("click", (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  openLightboxByIndex(idx);
-});
-
-slide.appendChild(img);
-
-        track.appendChild(slide);
-
-        const dot = document.createElement("span");
-        dot.addEventListener("click", () => { setGalleryIndex(idx); restartGalleryTimer(); });
-        dotsWrap.appendChild(dot);
-      });
-
-      setGalleryIndex(0);
-      restartGalleryTimer();
-    }catch(err){
-      caption.textContent = "Gallery couldn’t load yet. Publish photos in admin, then redeploy.";
-      console.warn("Gallery load error:", err);
-    }
-  }
-
-  // Load once page is ready
-// ===== Lightbox (safe) =====
+/* ===== Lightbox (safe) ===== */
 window.openLightbox = function (src, caption) {
   const lightbox = document.getElementById("lightbox");
   const lightboxImg = document.getElementById("lightboxImg");
   const lightboxCaption = document.getElementById("lightboxCaption");
-
-  if (!lightbox || !lightboxImg) {
-    console.error("Lightbox HTML not found (check ids: lightbox, lightboxImg).");
-    return;
-  }
+  if (!lightbox || !lightboxImg) return;
 
   lightboxImg.src = src;
   lightboxImg.alt = caption || "Job photo";
@@ -667,25 +608,6 @@ window.openLightbox = function (src, caption) {
 
   lightbox.classList.add("open");
   lightbox.setAttribute("aria-hidden", "false");
-  
-  // Open lightbox using the current gallery index (keeps Prev/Next possible)
-window.openLightboxByIndex = function (idx) {
-  if (!galleryItems || !galleryItems.length) return;
-
-  galleryIndex = (idx + galleryItems.length) % galleryItems.length;
-  const item = galleryItems[galleryIndex];
-
-  window.openLightbox(
-    encodeURI(item.image || ""),
-    item.title || `Job photo ${galleryIndex + 1}`
-};
-  
-    window.lightboxPrev = function () {
-  window.openLightboxByIndex(galleryIndex - 1);
-};
-
-window.lightboxNext = function () {
-  window.openLightboxByIndex(galleryIndex + 1);
 };
 
 window.closeLightbox = function () {
@@ -701,13 +623,72 @@ window.closeLightbox = function () {
   if (lightboxCaption) lightboxCaption.textContent = "";
 };
 
-// ESC closes (safe)
+window.openLightboxByIndex = function (idx) {
+  if (!galleryItems.length) return;
+  galleryIndex = (idx + galleryItems.length) % galleryItems.length;
+  const item = galleryItems[galleryIndex];
+  window.openLightbox(encodeURI(item.image || ""), item.title || `Job photo ${galleryIndex + 1}`);
+};
+
+window.lightboxPrev = function () { window.openLightboxByIndex(galleryIndex - 1); };
+window.lightboxNext = function () { window.openLightboxByIndex(galleryIndex + 1); };
+
 document.addEventListener("keydown", (e) => {
   const lightbox = document.getElementById("lightbox");
-  if (e.key === "Escape" && lightbox && lightbox.classList.contains("open")) {
-    window.closeLightbox();
-  }
+  if (e.key === "Escape" && lightbox && lightbox.classList.contains("open")) window.closeLightbox();
 });
+
+async function loadGallery(){
+  const track = document.getElementById("galleryTrack");
+  const dotsWrap = document.getElementById("galleryDots");
+  const caption = document.getElementById("galleryCaption");
+
+  try{
+    const res = await fetch("/content/gallery.json", { cache: "no-store" });
+    if(!res.ok) throw new Error("Gallery JSON not found");
+    const data = await res.json();
+
+    galleryItems = Array.isArray(data.items) ? data.items : [];
+    if(!galleryItems.length){
+      caption.textContent = "No photos yet — add some in the admin panel.";
+      return;
+    }
+
+    track.innerHTML = "";
+    dotsWrap.innerHTML = "";
+
+    galleryItems.forEach((item, idx) => {
+      const slide = document.createElement("div");
+      slide.className = "car-slide";
+
+      const img = document.createElement("img");
+      img.src = encodeURI(item.image || "");
+      img.alt = item.title ? item.title : `Job photo ${idx + 1}`;
+      img.loading = "lazy";
+
+      img.style.cursor = "zoom-in";
+      img.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        window.openLightboxByIndex(idx);
+      });
+
+      slide.appendChild(img);
+      track.appendChild(slide);
+
+      const dot = document.createElement("span");
+      dot.addEventListener("click", () => { setGalleryIndex(idx); restartGalleryTimer(); });
+      dotsWrap.appendChild(dot);
+    });
+
+    setGalleryIndex(0);
+    restartGalleryTimer();
+  }catch(err){
+    caption.textContent = "Gallery couldn’t load yet. Publish photos in admin, then redeploy.";
+    console.warn("Gallery load error:", err);
+  }
+}
+
 window.addEventListener("DOMContentLoaded", loadGallery);
 
 </script>
