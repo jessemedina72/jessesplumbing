@@ -667,6 +667,25 @@ window.openLightbox = function (src, caption) {
 
   lightbox.classList.add("open");
   lightbox.setAttribute("aria-hidden", "false");
+  
+  // Open lightbox using the current gallery index (keeps Prev/Next possible)
+window.openLightboxByIndex = function (idx) {
+  if (!galleryItems || !galleryItems.length) return;
+
+  galleryIndex = (idx + galleryItems.length) % galleryItems.length;
+  const item = galleryItems[galleryIndex];
+
+  window.openLightbox(
+    encodeURI(item.image || ""),
+    item.title || `Job photo ${galleryIndex + 1}`
+  };
+};
+    window.lightboxPrev = function () {
+  window.openLightboxByIndex(galleryIndex - 1);
+};
+
+window.lightboxNext = function () {
+  window.openLightboxByIndex(galleryIndex + 1);
 };
 
 window.closeLightbox = function () {
